@@ -1,4 +1,4 @@
-package com.finartz.airplanereservations.demo.util;
+package com.finartz.airplanereservations.demo.utils;
 
 public class CardUtil {
     public static String maskCard(String plainCardNumber){

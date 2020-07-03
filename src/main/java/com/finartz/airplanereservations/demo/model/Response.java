@@ -1,5 +1,7 @@
 package com.finartz.airplanereservations.demo.model;
 
-public abstract class Response {
+import com.finartz.airplanereservations.demo.entity.IEntity;
+
+public abstract class Response implements IEntity {
     public boolean isSuccess = true;
 }

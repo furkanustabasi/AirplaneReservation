@@ -1,7 +1,7 @@
 package com.finartz.airplanereservations.demo.entity;
 
 import com.finartz.airplanereservations.demo.model.Response;
-import com.finartz.airplanereservations.demo.util.CardUtil;
+import com.finartz.airplanereservations.demo.utils.CardUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

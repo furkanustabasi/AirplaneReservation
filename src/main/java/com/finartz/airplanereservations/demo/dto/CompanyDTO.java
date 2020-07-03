@@ -1,17 +1,10 @@
-package com.finartz.airplanereservations.demo.entity;
+package com.finartz.airplanereservations.demo.dto;
 
 
 import com.finartz.airplanereservations.demo.model.Response;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+public class CompanyDTO extends Response {
 
-@Entity
-public class Company extends Response implements IEntity {
-
-    @Id
-    @GeneratedValue
     private int id;
     private String name;
 

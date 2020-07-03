@@ -29,6 +29,7 @@ public class RoutesController {
     @GetMapping("/routes")
     public Response getById(@RequestParam(value = "id", defaultValue = "0") int id, HttpServletResponse res){
         Optional<Route> route = routeRepo.findById(id);
+
         if (route.isPresent()) {
             Route incomingRoute = route.get();
 
@@ -56,7 +57,7 @@ public class RoutesController {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new ErrorModel("Rota eklenirken bir hata oluştu.");
         }
-
     }
+
 
 }

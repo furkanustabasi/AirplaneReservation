@@ -1,12 +1,17 @@
 package com.finartz.airplanereservations.demo.controllers;
 
 import com.finartz.airplanereservations.demo.dao.*;
+import com.finartz.airplanereservations.demo.dto.AirplaneDTO;
+import com.finartz.airplanereservations.demo.dto.FlightDTO;
+import com.finartz.airplanereservations.demo.dto.RouteDTO;
 import com.finartz.airplanereservations.demo.entity.*;
 import com.finartz.airplanereservations.demo.model.*;
+import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
@@ -31,7 +36,13 @@ public class FlightsController {
 
 
     @PostMapping(path = "/flights")
-    public Response post(Flight flight, HttpServletResponse res) {
+    public Response post(FlightDTO flightDTO, HttpServletResponse res) {
+        Flight flight = new Flight();
+        try {
+            flight = new Mapper<>(flight, flightDTO).convertToEntity();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         int flightId = flightRepo.save(flight).getId();
         if (flightId > 0) {
             return new SuccessModel(flightId, "Uçuş başarıyla eklendi.");
@@ -80,27 +91,25 @@ public class FlightsController {
     private double calculatePrice(int oldQuota, int newQuota) {
         float diffQuota = (float) (newQuota - oldQuota);
         double increasePercentage = (diffQuota / oldQuota) * 100;
-
         if (increasePercentage >= 10.0) {
             return 1.10;
         } else {
             return 1.0;
         }
-
     }
 
     public Response arrangeFlightResult(int flightId, HttpServletResponse res) {
         Optional<Flight> optionalFlight = flightRepo.findById(flightId);
         if (optionalFlight.isPresent()) {
             Flight flight = optionalFlight.get();
-            FlightResponseModel flightResponseModel = new FlightResponseModel(flight);
+            FlightDTO flightDTO = new FlightDTO(flight);
             Optional<Airplane> optionalAirplane = airplaneRepo.findById(flight.getAirplaneId());
             if (optionalAirplane.isPresent()) {
                 Airplane airplane = optionalAirplane.get();
                 Optional<Company> optionalCompany = companyRepo.findById(airplane.getCompanyId());
                 if (optionalCompany.isPresent()) {
                     Company company = optionalCompany.get();
-                    flightResponseModel.setAirplane(new AirplaneResponseModel(airplane, company));
+                    flightDTO.setAirplane(new AirplaneDTO(airplane, company));
                 } else {
                     res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return new ErrorModel("Uçağa ait havayolu şirketi bulunamadı");
@@ -119,7 +128,7 @@ public class FlightsController {
                 if (optionalAirportFrom.isPresent() && optionalAirportTo.isPresent()) {
                     Airport airportFrom = optionalAirportFrom.get();
                     Airport airportTo = optionalAirportTo.get();
-                    flightResponseModel.setRoute(new RouteResponseModel(route.getId(), airportFrom, airportTo));
+                    flightDTO.setRoute(new RouteDTO(route.getId(), airportFrom, airportTo));
                 } else {
                     res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return new ErrorModel("Rotaya ait kalkış ya da varış havaalanı bulunamadı");
@@ -129,7 +138,7 @@ public class FlightsController {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return new ErrorModel("Uçuş'a ait rota bulunamadı");
             }
-            return flightResponseModel;
+            return flightDTO;
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return new ErrorModel("Uçuş bulunamadı");
