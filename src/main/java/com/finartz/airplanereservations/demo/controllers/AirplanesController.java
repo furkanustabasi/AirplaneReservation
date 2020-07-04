@@ -22,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 public class AirplanesController {
+
     @Autowired
     AirplaneRepo airplaneRepo;
 
@@ -36,7 +37,14 @@ public class AirplanesController {
             Airplane airplane = optionalAirplane.get();
             if (companyOptional.isPresent()) {
                 Company relatedCompany = companyOptional.get();
-                return new AirplaneDTO(airplane, relatedCompany);
+                AirplaneDTO airplaneDTO = new AirplaneDTO();
+                try {
+                    airplaneDTO = new Mapper<>(airplane, airplaneDTO).convertToDTO();
+                    airplaneDTO.setCompanyName(relatedCompany.getName());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return airplaneDTO;
             } else {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return new ErrorModel("Uçak şirketi bulunamadı");
@@ -49,17 +57,23 @@ public class AirplanesController {
 
     @PostMapping(path = "/airplanes")
     public Response post(AirplaneDTO airplaneDTO, HttpServletResponse res) {
-        Airplane airplane = new Airplane();
-        try {
-            airplane = new Mapper<>(airplane, airplaneDTO).convertToEntity();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        int airplaneId = airplaneRepo.save(airplane).getId();
-        if (airplaneId > 0) {
-            return new SuccessModel(airplaneId, "Uçak başarıyla eklendi.");
+        if (airplaneDTO.getCompanyId() > 0) {
+            Airplane airplane = new Airplane();
+            airplane.setCompanyId(airplaneDTO.getCompanyId());
+            try {
+                airplane = new Mapper<>(airplane, airplaneDTO).convertToEntity();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int airplaneId = airplaneRepo.save(airplane).getId();
+            if (airplaneId > 0) {
+                return new SuccessModel(airplaneId, "Uçak başarıyla eklendi.");
+            } else {
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return new ErrorModel("Uçak eklenirken bir hata oluştu.");
+            }
         } else {
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return new ErrorModel("Uçak eklenirken bir hata oluştu.");
         }
     }

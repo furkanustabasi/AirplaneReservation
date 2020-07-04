@@ -37,7 +37,7 @@ public class CustomersController {
             return customerDTO;
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return new ErrorModel("Müşteri bulunamadı");
         }
     }
 

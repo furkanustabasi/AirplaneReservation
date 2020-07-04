@@ -1,25 +1,16 @@
 package com.finartz.airplanereservations.demo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finartz.airplanereservations.demo.entity.Airplane;
-import com.finartz.airplanereservations.demo.entity.Company;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class AirplaneDTO extends Response {
 
     private int id;
     @JsonIgnoreProperties("isSuccess")
-    private Company company;
     private int maxQuota;
-    private String name;
-
-    public AirplaneDTO(Airplane airplane, Company company) {
-        this.id = airplane.getId();
-        this.maxQuota = airplane.getMaxQuota();
-        this.company = company;
-        this.name = airplane.getName();
-    }
-
+    private String airplaneName;
+    private String companyName;
+    private int companyId;
 
     public int getId() {
         return id;
@@ -27,14 +18,6 @@ public class AirplaneDTO extends Response {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
     }
 
     public int getMaxQuota() {
@@ -45,11 +28,27 @@ public class AirplaneDTO extends Response {
         this.maxQuota = maxQuota;
     }
 
-    public String getName() {
-        return name;
+    public String getAirplaneName() {
+        return airplaneName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAirplaneName(String airplaneName) {
+        this.airplaneName = airplaneName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }

@@ -57,7 +57,6 @@ public class CompaniesController {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new ErrorModel("Havayolu şirketi eklenirken bir hata oluştu.");
         }
-
     }
 
 }

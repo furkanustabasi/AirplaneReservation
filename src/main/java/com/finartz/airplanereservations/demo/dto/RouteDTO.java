@@ -1,37 +1,46 @@
 package com.finartz.airplanereservations.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finartz.airplanereservations.demo.entity.Airport;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class RouteDTO extends Response {
 
     private int id;
-    @JsonIgnoreProperties("isSuccess")
-    private Airport from;
-    @JsonIgnoreProperties("isSuccess")
-    private Airport to;
+    @JsonIgnoreProperties("toAirportId")
+    private int toAirportId;
+    @JsonIgnore
+    @JsonProperty(value = "fromAirportId")
+    private int fromAirportId;
 
-    public RouteDTO(int id, Airport from, Airport to){
-        this.id = id;
-        this.from = from;
-        this.to = to;
+
+    private String toAirport;
+    private String fromAirport;
+
+    public int getFromAirportId() {
+        return fromAirportId;
     }
 
-    public Airport getFrom() {
-        return from;
+    public void setFromAirportId(int fromAirportId) {
+        this.fromAirportId = fromAirportId;
     }
 
-    public void setFrom(Airport from) {
-        this.from = from;
+    public String getToAirport() {
+        return toAirport;
     }
 
-    public Airport getTo() {
-        return to;
+    public void setToAirport(String toAirport) {
+        this.toAirport = toAirport;
     }
 
-    public void setTo(Airport to) {
-        this.to = to;
+    public String getFromAirport() {
+        return fromAirport;
+    }
+
+    public void setFromAirport(String fromAirport) {
+        this.fromAirport = fromAirport;
     }
 
     public int getId() {
@@ -40,5 +49,13 @@ public class RouteDTO extends Response {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getToAirportId() {
+        return toAirportId;
+    }
+
+    public void setToAirportId(int toAirportId) {
+        this.toAirportId = toAirportId;
     }
 }

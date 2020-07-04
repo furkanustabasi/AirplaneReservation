@@ -6,36 +6,18 @@ import com.finartz.airplanereservations.demo.entity.Ticket;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class TicketDTO extends Response {
-    @JsonIgnoreProperties("isSuccess")
-    private Customer customer;
-    @JsonIgnoreProperties("isSuccess")
-    private FlightDTO flight;
+
 
     private int id;
+    private int customerId;
+    private int flightId;
     private double price;
     private boolean isCancelled;
 
-    public TicketDTO(Ticket ticket){
-        this.id = ticket.getId();
-        this.price = ticket.getPrice();
-        this.isCancelled = ticket.isCancelled();
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public FlightDTO getFlight() {
-        return flight;
-    }
-
-    public void setFlight(FlightDTO flight) {
-        this.flight = flight;
-    }
+    private String customerName;
+    private String fromAirportName;
+    private String toAirportName;
+    private String companyName;
 
     public int getId() {
         return id;
@@ -43,6 +25,22 @@ public class TicketDTO extends Response {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public int getFlightId() {
+        return flightId;
+    }
+
+    public void setFlightId(int flightId) {
+        this.flightId = flightId;
     }
 
     public double getPrice() {
@@ -59,5 +57,37 @@ public class TicketDTO extends Response {
 
     public void setCancelled(boolean cancelled) {
         isCancelled = cancelled;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getFromAirportName() {
+        return fromAirportName;
+    }
+
+    public void setFromAirportName(String fromAirportName) {
+        this.fromAirportName = fromAirportName;
+    }
+
+    public String getToAirportName() {
+        return toAirportName;
+    }
+
+    public void setToAirportName(String toAirportName) {
+        this.toAirportName = toAirportName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }

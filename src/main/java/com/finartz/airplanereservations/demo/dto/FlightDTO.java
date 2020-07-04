@@ -1,49 +1,23 @@
 package com.finartz.airplanereservations.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finartz.airplanereservations.demo.entity.Flight;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class FlightDTO extends Response {
 
-    @JsonIgnoreProperties("isSuccess")
-    private AirplaneDTO airplane;
-    @JsonIgnoreProperties("isSuccess")
-    private RouteDTO route;
 
     private int id;
-    private String departureTime;
-    private String arrivalTime;
-    private int quota;
-    private double price;
+    private int airplaneId;
+    private int routeId;
+    private  String departureTime;
+    private  String arrivalTime;
+    private  int quota;
+    private  double price;
     private String currency;
-    private boolean isCancelled;
+    private  boolean isCancelled;
 
-    public FlightDTO(Flight flight) {
-        this.id = flight.getId();
-        this.departureTime = flight.getDepartureTime();
-        this.arrivalTime = flight.getArrivalTime();
-        this.quota = flight.getQuota();
-        this.price = flight.getPrice();
-        this.currency = flight.getCurrency();
-        this.isCancelled = flight.isCancelled();
-    }
-
-    public AirplaneDTO getAirplane() {
-        return airplane;
-    }
-
-    public void setAirplane(AirplaneDTO airplane) {
-        this.airplane = airplane;
-    }
-
-    public RouteDTO getRoute() {
-        return route;
-    }
-
-    public void setRoute(RouteDTO route) {
-        this.route = route;
-    }
+    private String fromAirportName;
+    private String toAirportName;
+    private String companyName;
 
     public int getId() {
         return id;
@@ -51,6 +25,22 @@ public class FlightDTO extends Response {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getAirplaneId() {
+        return airplaneId;
+    }
+
+    public void setAirplaneId(int airplaneId) {
+        this.airplaneId = airplaneId;
+    }
+
+    public int getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(int routeId) {
+        this.routeId = routeId;
     }
 
     public String getDepartureTime() {
@@ -81,8 +71,16 @@ public class FlightDTO extends Response {
         return price;
     }
 
-    public void setPrice(double startedPrice) {
+    public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public boolean isCancelled() {
@@ -93,11 +91,32 @@ public class FlightDTO extends Response {
         isCancelled = cancelled;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getFromAirportName() {
+        return fromAirportName;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setFromAirportName(String fromAirportName) {
+        this.fromAirportName = fromAirportName;
     }
+
+    public String getToAirportName() {
+        return toAirportName;
+    }
+
+    public void setToAirportName(String toAirportName) {
+        this.toAirportName = toAirportName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+
+
+
+
 }

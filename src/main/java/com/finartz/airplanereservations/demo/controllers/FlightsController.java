@@ -1,9 +1,7 @@
 package com.finartz.airplanereservations.demo.controllers;
 
 import com.finartz.airplanereservations.demo.dao.*;
-import com.finartz.airplanereservations.demo.dto.AirplaneDTO;
 import com.finartz.airplanereservations.demo.dto.FlightDTO;
-import com.finartz.airplanereservations.demo.dto.RouteDTO;
 import com.finartz.airplanereservations.demo.entity.*;
 import com.finartz.airplanereservations.demo.model.*;
 import com.finartz.airplanereservations.demo.utils.Mapper;
@@ -102,14 +100,39 @@ public class FlightsController {
         Optional<Flight> optionalFlight = flightRepo.findById(flightId);
         if (optionalFlight.isPresent()) {
             Flight flight = optionalFlight.get();
-            FlightDTO flightDTO = new FlightDTO(flight);
+            FlightDTO flightDTO = new FlightDTO();
             Optional<Airplane> optionalAirplane = airplaneRepo.findById(flight.getAirplaneId());
             if (optionalAirplane.isPresent()) {
                 Airplane airplane = optionalAirplane.get();
                 Optional<Company> optionalCompany = companyRepo.findById(airplane.getCompanyId());
                 if (optionalCompany.isPresent()) {
                     Company company = optionalCompany.get();
-                    flightDTO.setAirplane(new AirplaneDTO(airplane, company));
+                    Optional<Route> optionalRoute = routeRepo.findById(flight.getRouteId());
+                    if (optionalRoute.isPresent()) {
+                        Route route = optionalRoute.get();
+                        Optional<Airport> fromAirportOptional = airportRepo.findById(route.getFromAirportId());
+                        Optional<Airport> toAirportOptional = airportRepo.findById(route.getToAirportId());
+                        if (fromAirportOptional.isPresent() && toAirportOptional.isPresent()) {
+                            Airport fromAirport = fromAirportOptional.get();
+                            Airport toAirport = toAirportOptional.get();
+                            try {
+                                flightDTO = new Mapper<>(flight, flightDTO).convertToDTO();
+                                flightDTO.setCompanyName(company.getName());
+                                flightDTO.setFromAirportName(fromAirport.getName());
+                                flightDTO.setToAirportName(toAirport.getName());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                            return new ErrorModel("Rotaya ait kalkış ya da varış havaalanı bulunamadı");
+                        }
+
+                    } else {
+                        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        return new ErrorModel("Uçuş'a ait rota bulunamadı");
+                    }
+
                 } else {
                     res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return new ErrorModel("Uçağa ait havayolu şirketi bulunamadı");
@@ -119,25 +142,6 @@ public class FlightsController {
                 return new ErrorModel("Uçuş'a ait uçak bulunamadı");
             }
 
-            Optional<Route> optionalRoute = routeRepo.findById(flight.getRouteId());
-            if (optionalRoute.isPresent()) {
-                Route route = optionalRoute.get();
-                Optional<Airport> optionalAirportFrom = airportRepo.findById(route.getFromAirportId());
-                Optional<Airport> optionalAirportTo = airportRepo.findById(route.getToAirportId());
-
-                if (optionalAirportFrom.isPresent() && optionalAirportTo.isPresent()) {
-                    Airport airportFrom = optionalAirportFrom.get();
-                    Airport airportTo = optionalAirportTo.get();
-                    flightDTO.setRoute(new RouteDTO(route.getId(), airportFrom, airportTo));
-                } else {
-                    res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    return new ErrorModel("Rotaya ait kalkış ya da varış havaalanı bulunamadı");
-                }
-
-            } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return new ErrorModel("Uçuş'a ait rota bulunamadı");
-            }
             return flightDTO;
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -52,7 +52,7 @@ public class AirportsController {
         }
         int airportId = repo.save(airport).getId();
         if (airportId > 0) {
-            return new SuccessModel(airportDTO.getId(), "Havalimanı başarıyla eklendi.");
+            return new SuccessModel(airport.getId(), "Havalimanı başarıyla eklendi.");
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new ErrorModel("Havalimanı eklenirken bir hata oluştu.");

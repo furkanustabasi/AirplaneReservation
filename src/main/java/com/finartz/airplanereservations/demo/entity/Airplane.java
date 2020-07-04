@@ -4,16 +4,17 @@ import com.finartz.airplanereservations.demo.model.Response;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Airplane extends Response {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int companyId;
     private int maxQuota;
-    private String name;
+    private String airplaneName;
 
     public int getCompanyId() {
         return companyId;
@@ -39,11 +40,11 @@ public class Airplane extends Response {
         this.maxQuota = maxQuota;
     }
 
-    public String getName() {
-        return name;
+    public String getAirplaneName() {
+        return airplaneName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAirplaneName(String airplaneName) {
+        this.airplaneName = airplaneName;
     }
 }

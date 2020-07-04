@@ -4,13 +4,14 @@ import com.finartz.airplanereservations.demo.model.Response;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Flight extends Response {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int airplaneId;
     private int routeId;

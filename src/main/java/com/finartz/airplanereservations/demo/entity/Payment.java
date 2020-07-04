@@ -5,12 +5,13 @@ import com.finartz.airplanereservations.demo.utils.CardUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Payment extends Response {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int ticketId;
     private String maskedCardNumber;

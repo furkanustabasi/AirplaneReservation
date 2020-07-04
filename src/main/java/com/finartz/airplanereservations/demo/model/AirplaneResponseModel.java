@@ -16,7 +16,7 @@ public class AirplaneResponseModel extends Response {
         this.id = airplane.getId();
         this.maxQuota = airplane.getMaxQuota();
         this.company = company;
-        this.name = airplane.getName();
+        this.name = airplane.getAirplaneName();
     }
 
 

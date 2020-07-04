@@ -2,14 +2,18 @@ package com.finartz.airplanereservations.demo.controllers;
 
 
 import com.finartz.airplanereservations.demo.dao.CustomerRepo;
+import com.finartz.airplanereservations.demo.dto.FlightDTO;
+import com.finartz.airplanereservations.demo.dto.TicketDTO;
 import com.finartz.airplanereservations.demo.entity.Customer;
 import com.finartz.airplanereservations.demo.entity.Ticket;
 import com.finartz.airplanereservations.demo.dao.TicketRepo;
 import com.finartz.airplanereservations.demo.model.*;
+import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +34,13 @@ public class TicketsController {
     }
 
     @PostMapping(path = "/tickets")
-    public Response post(Ticket ticket, HttpServletResponse res) {
+    public Response post(TicketDTO ticketDTO, HttpServletResponse res) {
+        Ticket ticket = new Ticket();
+        try {
+            ticket = new Mapper<>(ticket,ticketDTO).convertToEntity();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         int ticketId = ticketRepo.save(ticket).getId();
         if (ticketId > 0) {
             return new SuccessModel(ticketId, "Bilet başarıyla eklendi.");
@@ -62,11 +72,12 @@ public class TicketsController {
         if (optionalTicket.isPresent()) {
             Ticket ticket = optionalTicket.get();
             TicketResponseModel ticketResponseModel = new TicketResponseModel(ticket);
+
             Response flightResponse = flightsController.arrangeFlightResult(ticket.getFlightId(), res);
 
             if (!flightResponse.isSuccess) {
                 return flightResponse;
-            } else if (flightResponse instanceof FlightResponseModel) {
+            } else if (flightResponse instanceof FlightDTO) {
                 ticketResponseModel.setFlight((FlightResponseModel) flightResponse);
             } else {
                 res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
