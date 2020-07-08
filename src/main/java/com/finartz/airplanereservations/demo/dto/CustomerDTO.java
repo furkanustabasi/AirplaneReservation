@@ -2,7 +2,10 @@ package com.finartz.airplanereservations.demo.dto;
 
 import com.finartz.airplanereservations.demo.model.Response;
 
+import javax.validation.constraints.NotEmpty;
+
 public class CustomerDTO extends Response {
+
     private int id;
     private String name;
 

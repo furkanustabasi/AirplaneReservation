@@ -1,8 +1,5 @@
 package com.finartz.airplanereservations.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finartz.airplanereservations.demo.entity.Customer;
-import com.finartz.airplanereservations.demo.entity.Ticket;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class TicketDTO extends Response {

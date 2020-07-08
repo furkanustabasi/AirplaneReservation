@@ -1,31 +1,15 @@
 package com.finartz.airplanereservations.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finartz.airplanereservations.demo.entity.Payment;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class PaymentDTO extends Response {
 
-    @JsonIgnoreProperties("isSuccess")
-    private TicketDTO ticket;
 
     private int id;
     private String maskedCardNumber;
     private boolean isCancelled;
+    private int ticketId;
 
-    public PaymentDTO(Payment payment){
-        this.id = payment.getId();
-        this.maskedCardNumber = payment.getMaskedCardNumber();
-        this.isCancelled = payment.isCancelled();
-    }
-
-    public TicketDTO getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(TicketDTO ticket) {
-        this.ticket = ticket;
-    }
 
     public int getId() {
         return id;
@@ -49,5 +33,13 @@ public class PaymentDTO extends Response {
 
     public void setCancelled(boolean cancelled) {
         isCancelled = cancelled;
+    }
+
+    public int getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
     }
 }

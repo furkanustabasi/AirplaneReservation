@@ -6,12 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
 
 @Entity
 public class Airplane extends Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Min(value = 1)
     private int companyId;
     private int maxQuota;
     private String airplaneName;

@@ -3,7 +3,13 @@ package com.finartz.airplanereservations.demo.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.finartz.airplanereservations.demo.model.Response;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+
 public class AirplaneDTO extends Response {
+
 
     private int id;
     @JsonIgnoreProperties("isSuccess")

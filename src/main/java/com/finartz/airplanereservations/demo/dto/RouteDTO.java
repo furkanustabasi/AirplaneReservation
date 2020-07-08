@@ -1,18 +1,11 @@
 package com.finartz.airplanereservations.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.finartz.airplanereservations.demo.entity.Airport;
 import com.finartz.airplanereservations.demo.model.Response;
 
 public class RouteDTO extends Response {
 
     private int id;
-    @JsonIgnoreProperties("toAirportId")
     private int toAirportId;
-    @JsonIgnore
-    @JsonProperty(value = "fromAirportId")
     private int fromAirportId;
 
 

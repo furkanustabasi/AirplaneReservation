@@ -4,6 +4,7 @@ import com.finartz.airplanereservations.demo.dao.*;
 import com.finartz.airplanereservations.demo.dto.FlightDTO;
 import com.finartz.airplanereservations.demo.entity.*;
 import com.finartz.airplanereservations.demo.model.*;
+import com.finartz.airplanereservations.demo.service.FlightService;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,59 +27,35 @@ public class FlightsController {
     @Autowired
     AirportRepo airportRepo;
 
+    @Autowired
+    FlightService flightService;
+
 
     @GetMapping("/flights")
     public Response getById(@RequestParam(value = "id", defaultValue = "0") int id, HttpServletResponse res) {
         return this.arrangeFlightResult(id, res);
     }
 
-
     @PostMapping(path = "/flights")
     public Response post(FlightDTO flightDTO, HttpServletResponse res) {
-        Flight flight = new Flight();
-        try {
-            flight = new Mapper<>(flight, flightDTO).convertToEntity();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        int flightId = flightRepo.save(flight).getId();
+        int flightId = flightService.post(flightDTO);
         if (flightId > 0) {
             return new SuccessModel(flightId, "Uçuş başarıyla eklendi.");
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new ErrorModel("Uçuş eklenirken bir hata oluştu.");
         }
-
     }
 
     @PutMapping(path = "/flights")
     public Response increaseQuota(int flightId, int newQuota, HttpServletResponse res) {
-        Optional<Flight> optionalFlight = flightRepo.findById(flightId);
-        if (optionalFlight.isPresent()) {
-            Flight flight = optionalFlight.get();
-            Optional<Airplane> optionalAirplane = airplaneRepo.findById(flight.getAirplaneId());
-            if (optionalAirplane.isPresent()) {
-                Airplane airplane = optionalAirplane.get();
-                if (newQuota <= airplane.getMaxQuota()) {
-                    int oldQuota = flight.getQuota();
-                    if (newQuota > oldQuota) {
-                        flight.setQuota(newQuota);
-                        double oldPrice = flight.getPrice();
-                        flight.setPrice(Math.round(oldPrice * calculatePrice(oldQuota, newQuota)));
-                        flightRepo.save(flight);//update selected flight quota
-                        return new SuccessModel(flightId, "Uçuş başarıyla güncellendi.");
-                    } else {
-                        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        return new ErrorModel("Uçuş güncellenirken bir hata oluştu.");
-                    }
-
-                } else {
-                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    return new ErrorModel("Uçuş kotası uçak kotasını aşmıştır.");
-                }
+        int responseId = flightService.increaseQuota(flightId, newQuota);
+        if (!(responseId == 0)) {
+            if (!(responseId == -1)) {
+                return new SuccessModel(responseId, "Uçuş başarıyla güncellendi.");
             } else {
-                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                return new ErrorModel("Uçuş güncellenirken bir hata oluştu.");
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return new ErrorModel("Uçuş kotası uçak kotasını aşmıştır.");
             }
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -125,7 +102,7 @@ public class FlightsController {
                             }
                         } else {
                             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            return new ErrorModel("Rotaya ait kalkış ya da varış havaalanı bulunamadı");
+                            return new ErrorModel("Uçuş'a ait kalkış ya da varış havaalanı bulunamadı");
                         }
 
                     } else {
@@ -135,7 +112,7 @@ public class FlightsController {
 
                 } else {
                     res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    return new ErrorModel("Uçağa ait havayolu şirketi bulunamadı");
+                    return new ErrorModel("Uçaş'a ait havayolu şirketi bulunamadı");
                 }
             } else {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
