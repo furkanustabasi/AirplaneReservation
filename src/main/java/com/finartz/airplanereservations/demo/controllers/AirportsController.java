@@ -22,12 +22,16 @@ public class AirportsController {
 
     @GetMapping("/airports")
     public Response getById(@RequestParam(value = "id", defaultValue = "0") int id, HttpServletResponse res) {
-        AirportDTO airportDTO = airportService.get(id);
-        if (airportDTO != null) {
-            return airportDTO;
-        } else {
+        Response response = airportService.get(id);
+        if (response.getClass() == AirportDTO.class) {
+            return response;
+        }
+        else if (response.getClass() == ErrorModel.class) {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return new ErrorModel("Havalimanı bulunamadı");
+            return response;
+        } else {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return response;
         }
     }
 
@@ -35,10 +39,13 @@ public class AirportsController {
     public Response post(AirportDTO airportDTO, HttpServletResponse res) {
         int airportId = airportService.post(airportDTO);
         if (airportId > 0) {
-            return new SuccessModel(airportId, "Havalimanı başarıyla eklendi.");
+            return new SuccessModel(airportId, "Uçak başarıyla eklendi.");
+        } else if (airportId == 0) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return new ErrorModel("Uçak eklenirken bir hata oluştu.");
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return new ErrorModel("Havalimanı eklenirken bir hata oluştu.");
+            return new ErrorModel("Uçak eklenirken bir hata oluştu.");
         }
     }
 }

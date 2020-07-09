@@ -3,10 +3,10 @@ package com.finartz.airplanereservations.demo.service;
 
 import com.finartz.airplanereservations.demo.dao.AirportRepo;
 import com.finartz.airplanereservations.demo.dao.RouteRepo;
-import com.finartz.airplanereservations.demo.dto.AirplaneDTO;
 import com.finartz.airplanereservations.demo.dto.RouteDTO;
 import com.finartz.airplanereservations.demo.entity.Airport;
 import com.finartz.airplanereservations.demo.entity.Route;
+import com.finartz.airplanereservations.demo.model.ErrorModel;
 import com.finartz.airplanereservations.demo.model.Response;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class RouteService {
     @Autowired
     AirportRepo airportRepo;
 
-    public RouteDTO get(int id) {
+    public Response get(int id) {
         Optional<Route> optionalRoute = routeRepo.findById(id);
         if (optionalRoute.isPresent()) {
             Route incomingRoute = optionalRoute.get();
@@ -48,11 +48,11 @@ public class RouteService {
                 return routeDTO;
             } else {
 
-                return null;
+                return new ErrorModel("Belirtilen rota bilgileri mevcut değil.");
             }
         } else {
 
-            return null;
+            return new ErrorModel("Belirtilen rota bilgileri mevcut değil.");
         }
     }
 

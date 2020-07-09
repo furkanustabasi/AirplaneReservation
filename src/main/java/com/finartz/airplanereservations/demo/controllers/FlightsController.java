@@ -1,31 +1,17 @@
 package com.finartz.airplanereservations.demo.controllers;
 
-import com.finartz.airplanereservations.demo.dao.*;
 import com.finartz.airplanereservations.demo.dto.FlightDTO;
-import com.finartz.airplanereservations.demo.entity.*;
-import com.finartz.airplanereservations.demo.model.*;
+import com.finartz.airplanereservations.demo.model.ErrorModel;
+import com.finartz.airplanereservations.demo.model.Response;
+import com.finartz.airplanereservations.demo.model.SuccessModel;
 import com.finartz.airplanereservations.demo.service.FlightService;
-import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
-import java.util.Optional;
 
 @RestController
 public class FlightsController {
-
-    @Autowired
-    FlightRepo flightRepo;
-    @Autowired
-    AirplaneRepo airplaneRepo;
-    @Autowired
-    CompanyRepo companyRepo;
-    @Autowired
-    RouteRepo routeRepo;
-    @Autowired
-    AirportRepo airportRepo;
 
     @Autowired
     FlightService flightService;
@@ -33,7 +19,11 @@ public class FlightsController {
 
     @GetMapping("/flights")
     public Response getById(@RequestParam(value = "id", defaultValue = "0") int id, HttpServletResponse res) {
-        return this.arrangeFlightResult(id, res);
+        Response response = flightService.get(id);
+        if(response.getClass() == ErrorModel.class){
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        return response;
     }
 
     @PostMapping(path = "/flights")
@@ -63,67 +53,4 @@ public class FlightsController {
         }
     }
 
-    private double calculatePrice(int oldQuota, int newQuota) {
-        float diffQuota = (float) (newQuota - oldQuota);
-        double increasePercentage = (diffQuota / oldQuota) * 100;
-        if (increasePercentage >= 10.0) {
-            return 1.10;
-        } else {
-            return 1.0;
-        }
-    }
-
-    public Response arrangeFlightResult(int flightId, HttpServletResponse res) {
-        Optional<Flight> optionalFlight = flightRepo.findById(flightId);
-        if (optionalFlight.isPresent()) {
-            Flight flight = optionalFlight.get();
-            FlightDTO flightDTO = new FlightDTO();
-            Optional<Airplane> optionalAirplane = airplaneRepo.findById(flight.getAirplaneId());
-            if (optionalAirplane.isPresent()) {
-                Airplane airplane = optionalAirplane.get();
-                Optional<Company> optionalCompany = companyRepo.findById(airplane.getCompanyId());
-                if (optionalCompany.isPresent()) {
-                    Company company = optionalCompany.get();
-                    Optional<Route> optionalRoute = routeRepo.findById(flight.getRouteId());
-                    if (optionalRoute.isPresent()) {
-                        Route route = optionalRoute.get();
-                        Optional<Airport> fromAirportOptional = airportRepo.findById(route.getFromAirportId());
-                        Optional<Airport> toAirportOptional = airportRepo.findById(route.getToAirportId());
-                        if (fromAirportOptional.isPresent() && toAirportOptional.isPresent()) {
-                            Airport fromAirport = fromAirportOptional.get();
-                            Airport toAirport = toAirportOptional.get();
-                            try {
-                                flightDTO = new Mapper<>(flight, flightDTO).convertToDTO();
-                                flightDTO.setCompanyName(company.getName());
-                                flightDTO.setFromAirportName(fromAirport.getName());
-                                flightDTO.setToAirportName(toAirport.getName());
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            return new ErrorModel("Uçuş'a ait kalkış ya da varış havaalanı bulunamadı");
-                        }
-
-                    } else {
-                        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                        return new ErrorModel("Uçuş'a ait rota bulunamadı");
-                    }
-
-                } else {
-                    res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    return new ErrorModel("Uçaş'a ait havayolu şirketi bulunamadı");
-                }
-            } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return new ErrorModel("Uçuş'a ait uçak bulunamadı");
-            }
-
-            return flightDTO;
-        } else {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return new ErrorModel("Uçuş bulunamadı");
-        }
-
-    }
 }

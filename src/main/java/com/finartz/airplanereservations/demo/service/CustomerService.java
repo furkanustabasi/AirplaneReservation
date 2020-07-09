@@ -1,9 +1,10 @@
 package com.finartz.airplanereservations.demo.service;
 
 import com.finartz.airplanereservations.demo.dao.CustomerRepo;
-import com.finartz.airplanereservations.demo.dto.CompanyDTO;
 import com.finartz.airplanereservations.demo.dto.CustomerDTO;
 import com.finartz.airplanereservations.demo.entity.Customer;
+import com.finartz.airplanereservations.demo.model.ErrorModel;
+import com.finartz.airplanereservations.demo.model.Response;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class CustomerService {
     @Autowired
     CustomerRepo customerRepo;
 
-    public CustomerDTO get(int id) {
+    public Response get(int id) {
         Optional<Customer> customerOptional = customerRepo.findById(id);
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
@@ -29,7 +30,7 @@ public class CustomerService {
             }
             return customerDTO;
         } else {
-            return null;
+            return new ErrorModel("Şirket bulunamadı.");
         }
     }
 
@@ -44,7 +45,7 @@ public class CustomerService {
             }
             return customerRepo.save(customer).getId();
        } else {
-            return 0;
+            return -1;
         }
     }
 }

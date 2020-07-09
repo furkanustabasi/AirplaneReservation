@@ -3,17 +3,14 @@ package com.finartz.airplanereservations.demo.service;
 import com.finartz.airplanereservations.demo.dao.AirplaneRepo;
 import com.finartz.airplanereservations.demo.dao.CompanyRepo;
 import com.finartz.airplanereservations.demo.dto.AirplaneDTO;
-import com.finartz.airplanereservations.demo.dto.CompanyDTO;
 import com.finartz.airplanereservations.demo.entity.Airplane;
 import com.finartz.airplanereservations.demo.entity.Company;
 import com.finartz.airplanereservations.demo.model.ErrorModel;
 import com.finartz.airplanereservations.demo.model.Response;
-import com.finartz.airplanereservations.demo.model.SuccessModel;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -42,10 +39,10 @@ public class AirplaneService {
                 }
                 return airplaneDTO;
             } else {
-                return new CompanyDTO();
+                return new ErrorModel("Uçak getirilirken bir hata oluştu.");
             }
         } else {
-            return null;
+            return new ErrorModel("Uçak getirilirken bir hata oluştu.");
         }
     }
 
@@ -59,11 +56,11 @@ public class AirplaneService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            int airplaneId = airplaneRepo.save(airplane).getId();
-            return airplaneId;
+            return airplaneRepo.save(airplane).getId();
         } else {
-            return 0;
+            return -1;
         }
+
     }
 
 

@@ -4,12 +4,11 @@ import com.finartz.airplanereservations.demo.dao.*;
 import com.finartz.airplanereservations.demo.dto.FlightDTO;
 import com.finartz.airplanereservations.demo.entity.*;
 import com.finartz.airplanereservations.demo.model.ErrorModel;
-import com.finartz.airplanereservations.demo.model.SuccessModel;
+import com.finartz.airplanereservations.demo.model.Response;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class FlightService {
     @Autowired
     AirportRepo airportRepo;
 
-   /* public FlightDTO get(int id) {
+    public Response get(int id) {
         Optional<Flight> optionalFlight = flightRepo.findById(id);
         if (optionalFlight.isPresent()) {
             Flight flight = optionalFlight.get();
@@ -54,6 +53,7 @@ public class FlightService {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
+                            return flightDTO;
                         } else {
 
                             return new ErrorModel("Uçuş'a ait kalkış ya da varış havaalanı bulunamadı");
@@ -72,13 +72,11 @@ public class FlightService {
 
                 return new ErrorModel("Uçuş'a ait uçak bulunamadı");
             }
-
-            return flightDTO;
         } else {
 
             return new ErrorModel("Uçuş bulunamadı");
         }
-    }*/
+    }
 
     public int post(FlightDTO flightDTO) {
         Optional<Route> optionalRoute = routeRepo.findById(flightDTO.getRouteId());
@@ -97,7 +95,7 @@ public class FlightService {
     }
 
 
-    public int increaseQuota(int id,int newQuota){
+    public int increaseQuota(int id, int newQuota) {
         Optional<Flight> optionalFlight = flightRepo.findById(id);
         if (optionalFlight.isPresent()) {
             Flight flight = optionalFlight.get();

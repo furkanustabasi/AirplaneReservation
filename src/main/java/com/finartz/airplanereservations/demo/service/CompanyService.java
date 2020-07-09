@@ -3,10 +3,11 @@ package com.finartz.airplanereservations.demo.service;
 import com.finartz.airplanereservations.demo.dao.CompanyRepo;
 import com.finartz.airplanereservations.demo.dto.CompanyDTO;
 import com.finartz.airplanereservations.demo.entity.Company;
+import com.finartz.airplanereservations.demo.model.ErrorModel;
+import com.finartz.airplanereservations.demo.model.Response;
 import com.finartz.airplanereservations.demo.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.text.ParseException;
 import java.util.Optional;
@@ -15,9 +16,10 @@ import java.util.Optional;
 public class CompanyService {
 
     @Autowired
-    CompanyRepo companyRepo;
+    private CompanyRepo companyRepo;
 
-    public CompanyDTO get(int id) {
+
+    public Response get(int id) {
         Optional<Company> companyOptional = companyRepo.findById(id);
         if (companyOptional.isPresent()) {
             Company company = companyOptional.get();
@@ -29,7 +31,7 @@ public class CompanyService {
             }
             return companyDTO;
         } else {
-            return null;
+            return new ErrorModel("Şirket bulunamadı.");
         }
     }
 
