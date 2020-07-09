@@ -34,13 +34,13 @@ public class CustomersController {
         int customerId = customerService.post(customerDTO);
 
         if (customerId > 0) {
-            return new SuccessModel(customerId, "Havayolu şirketi başarıyla eklendi.");
+            return new SuccessModel(customerId, "Müşteri başarıyla eklendi.");
         } else if (customerId == -1) {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new ErrorModel("Havayolu şirketi eklenirken bir hata oluştu.");
+            return new ErrorModel("Müşteri eklenirken bir hata oluştu.");
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return new ErrorModel("Havayolu şirketi eklenirken bir hata oluştu.");
+            return new ErrorModel("Müşteri eklenirken bir hata oluştu.");
         }
 
     }
